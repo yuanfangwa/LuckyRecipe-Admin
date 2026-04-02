@@ -29,7 +29,7 @@ export default function RecipeList() {
     setLoading(true)
     try {
       const res = await getRecipeList({ pageNum, pageSize, keyword, status })
-      setData(res.list)
+      setData(res.records)
       setTotal(res.total)
     } catch {
       // empty
@@ -58,7 +58,7 @@ export default function RecipeList() {
 
   const columns = [
     { title: 'ID', dataIndex: 'id', width: 60 },
-    { title: '名称', dataIndex: 'title', ellipsis: true },
+    { title: '名称', dataIndex: 'name', ellipsis: true },
     { title: '分类', dataIndex: 'category', width: 100 },
     { title: '难度', dataIndex: 'difficulty', width: 80 },
     {
@@ -70,7 +70,7 @@ export default function RecipeList() {
     },
     { title: '浏览量', dataIndex: 'viewCount', width: 80, sorter: (a: Recipe, b: Recipe) => a.viewCount - b.viewCount },
     { title: '点赞数', dataIndex: 'likeCount', width: 80, sorter: (a: Recipe, b: Recipe) => a.likeCount - b.likeCount },
-    { title: '创建时间', dataIndex: 'createdAt', width: 170 },
+    { title: '创建时间', dataIndex: 'createTime', width: 170 },
     {
       title: '操作', width: 200, fixed: 'right' as const,
       render: (_: unknown, record: Recipe) => (

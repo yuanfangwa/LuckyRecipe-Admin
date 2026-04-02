@@ -7,17 +7,15 @@ export interface Overview {
   todayVisits: number
 }
 
-export interface TrendItem {
-  date: string
-  recipes: number
-  users: number
-  visits: number
+export interface ContentAnalytics {
+  totalRecipes: number
+  [key: string]: any
 }
 
 export function getOverview() {
-  return api.get<any, Overview>('/admin/analytics/overview')
+  return api.get<any, ContentAnalytics>('/admin/analytics/content/recipes')
 }
 
-export function getTrend() {
-  return api.get<any, TrendItem[]>('/admin/analytics/trend')
+export function getHealthStatus() {
+  return api.get<any, any>('/admin/analytics/health/status')
 }

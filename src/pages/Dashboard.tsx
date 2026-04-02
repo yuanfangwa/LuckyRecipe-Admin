@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
-import { Row, Col, Card, Statistic, Table, Tag, Spin } from 'antd'
+import { Row, Col, Card, Statistic, Table, Tag, Spin, Empty } from 'antd'
 import { FileTextOutlined, UserOutlined, MessageOutlined, EyeOutlined } from '@ant-design/icons'
-import { getOverview, getTrend } from '../api/dashboard'
-import type { Overview, TrendItem } from '../api/dashboard'
+import { getOverview, getHealthStatus } from '../api/dashboard'
+import type { ContentAnalytics } from '../api/dashboard'
 
 export default function Dashboard() {
-  const [overview, setOverview] = useState<Overview | null>(null)
-  const [trend, setTrend] = useState<TrendItem[]>([])
+  const [analytics, setAnalytics] = useState<ContentAnalytics | null>(null)
+  const [health, setHealth] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -16,9 +16,12 @@ export default function Dashboard() {
   const loadData = async () => {
     setLoading(true)
     try {
-      const [ov, tr] = await Promise.all([getOverview(), getTrend()])
-      setOverview(ov)
-      setTrend(tr)
+      const [ov, hs] = await Promise.all([
+        getOverview().catch(() => null),
+        getHealthStatus().catch(() => null),
+      ])
+      setAnalytics(ov)
+      setHealth(hs)
     } catch {
       // use empty defaults
     } finally {
@@ -26,67 +29,72 @@ export default function Dashboard() {
     }
   }
 
-  const stats = overview || { totalRecipes: 0, totalUsers: 0, totalComments: 0, todayVisits: 0 }
-
-  const trendColumns = [
-    { title: '日期', dataIndex: 'date', key: 'date' },
-    { title: '新增菜谱', dataIndex: 'recipes', key: 'recipes' },
-    { title: '新增用户', dataIndex: 'users', key: 'users' },
-    { title: '访问量', dataIndex: 'visits', key: 'visits' },
-  ]
-
-  const activityColumns = [
-    { title: '时间', dataIndex: 'time', key: 'time' },
-    { title: '事件', dataIndex: 'event', key: 'event' },
-    { title: '状态', dataIndex: 'status', key: 'status', render: (s: string) => (
-      <Tag color={s === '成功' ? 'green' : 'orange'}>{s}</Tag>
-    )},
-  ]
+  const stats: Record<string, any> = analytics || {}
 
   return (
     <Spin spinning={loading}>
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} lg={6}>
           <Card>
-            <Statistic title="总菜谱数" value={stats.totalRecipes} prefix={<FileTextOutlined style={{ color: '#FF6B35' }} />} />
+            <Statistic title="总菜谱数" value={stats.totalRecipes ?? 0} prefix={<FileTextOutlined style={{ color: '#FF6B35' }} />} />
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <Card>
-            <Statistic title="总用户数" value={stats.totalUsers} prefix={<UserOutlined style={{ color: '#1890ff' }} />} />
+            <Statistic title="总用户数" value={stats.totalUsers ?? '-'} prefix={<UserOutlined style={{ color: '#1890ff' }} />} />
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <Card>
-            <Statistic title="总评论数" value={stats.totalComments} prefix={<MessageOutlined style={{ color: '#52c41a' }} />} />
+            <Statistic title="总评论数" value={stats.totalComments ?? '-'} prefix={<MessageOutlined style={{ color: '#52c41a' }} />} />
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <Card>
-            <Statistic title="今日访问量" value={stats.todayVisits} prefix={<EyeOutlined style={{ color: '#722ed1' }} />} />
+            <Statistic title="今日访问量" value={stats.todayVisits ?? '-'} prefix={<EyeOutlined style={{ color: '#722ed1' }} />} />
           </Card>
         </Col>
       </Row>
 
       <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
-        <Col xs={24} lg={16}>
-          <Card title="趋势数据">
-            <Table columns={trendColumns} dataSource={trend} rowKey="date" pagination={false} size="small" />
+        <Col xs={24} lg={12}>
+          <Card title="系统健康状态">
+            {health ? (
+              <Table
+                columns={[
+                  { title: '指标', dataIndex: 'label', key: 'label' },
+                  { title: '状态', dataIndex: 'value', key: 'value', render: (v: any) => (
+                    <Tag color={typeof v === 'boolean' ? (v ? 'green' : 'red') : 'blue'}>{String(v)}</Tag>
+                  )},
+                ]}
+                dataSource={Object.entries(health).map(([k, v], i) => ({ key: i, label: k, value: v }))}
+                rowKey="key"
+                pagination={false}
+                size="small"
+              />
+            ) : (
+              <Empty description="暂无数据" />
+            )}
           </Card>
         </Col>
-        <Col xs={24} lg={8}>
-          <Card title="最近活动">
-            <Table
-              columns={activityColumns}
-              dataSource={[
-                { key: 1, time: '10:30', event: '新菜谱发布', status: '成功' },
-                { key: 2, time: '09:15', event: '用户注册', status: '成功' },
-                { key: 3, time: '08:00', event: '系统备份', status: '成功' },
-                { key: 4, time: '昨日', event: '推荐算法更新', status: '成功' },
-              ]}
-              pagination={false}
-              size="small"
-            />
+        <Col xs={24} lg={12}>
+          <Card title="内容概览">
+            {analytics ? (
+              <Table
+                columns={[
+                  { title: '指标', dataIndex: 'label', key: 'label' },
+                  { title: '值', dataIndex: 'value', key: 'value' },
+                ]}
+                dataSource={Object.entries(analytics)
+                  .filter(([, v]) => typeof v === 'number' || typeof v === 'string')
+                  .map(([k, v], i) => ({ key: i, label: k, value: v }))}
+                rowKey="key"
+                pagination={false}
+                size="small"
+              />
+            ) : (
+              <Empty description="暂无数据" />
+            )}
           </Card>
         </Col>
       </Row>

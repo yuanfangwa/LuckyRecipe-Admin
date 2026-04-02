@@ -2,15 +2,25 @@ import api from './request'
 
 export interface Recipe {
   id: number
-  title: string
-  category: string
-  difficulty: string
-  status: number
-  viewCount: number
-  likeCount: number
-  createdAt: string
+  name: string
   description?: string
   coverImage?: string
+  difficulty?: string
+  cookingTime?: number
+  servings?: number
+  category?: string
+  prepTimeMinutes?: number
+  viewCount: number
+  likeCount: number
+  commentCount: number
+  status: number
+  createTime: string
+  updateTime?: string
+  sourceId?: number
+  sourceType?: string
+  nutritionInfo?: string
+  imagePath?: string
+  sourcePath?: string
   ingredients?: RecipeIngredient[]
   steps?: RecipeStep[]
 }
@@ -33,10 +43,11 @@ export interface RecipeListParams {
 }
 
 export interface PageResult<T> {
-  list: T[]
+  records: T[]
   total: number
-  pageNum: number
-  pageSize: number
+  size: number
+  current: number
+  pages: number
 }
 
 export function getRecipeList(params: RecipeListParams) {

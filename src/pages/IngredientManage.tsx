@@ -22,7 +22,7 @@ export default function IngredientManage() {
     setLoading(true)
     try {
       const res = await getIngredientList({ pageNum, pageSize, keyword, category })
-      setData(res.list)
+      setData(res.records)
       setTotal(res.total)
     } catch { /* */ }
     finally { setLoading(false) }
@@ -58,7 +58,7 @@ export default function IngredientManage() {
     { title: 'ID', dataIndex: 'id', width: 60 },
     { title: '食材名称', dataIndex: 'name' },
     { title: '分类', dataIndex: 'category', width: 120 },
-    { title: '创建时间', dataIndex: 'createdAt', width: 170 },
+    { title: '创建时间', dataIndex: 'createTime', width: 170 },
     {
       title: '操作', width: 140,
       render: (_: unknown, record: Ingredient) => (

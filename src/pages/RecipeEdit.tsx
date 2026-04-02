@@ -45,7 +45,7 @@ export default function RecipeEdit() {
   return (
     <Form form={form} layout="vertical" onFinish={onFinish} style={{ maxWidth: 800 }}>
       <Card title="基本信息" style={{ marginBottom: 16 }}>
-        <Form.Item name="title" label="菜谱名称" rules={[{ required: true, message: '请输入菜谱名称' }]}>
+        <Form.Item name="name" label="菜谱名称" rules={[{ required: true, message: '请输入菜谱名称' }]}>
           <Input />
         </Form.Item>
         <Space style={{ display: 'flex' }} size="large">

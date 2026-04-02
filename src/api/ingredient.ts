@@ -4,8 +4,15 @@ import type { PageResult } from './recipe'
 export interface Ingredient {
   id: number
   name: string
-  category: string
-  createdAt: string
+  category?: string
+  unit?: string
+  imageUrl?: string
+  description?: string
+  sourceId?: number
+  sourceType?: string
+  createTime: string
+  updateTime?: string
+  deleted?: number
 }
 
 export interface IngredientListParams {
@@ -19,7 +26,7 @@ export function getIngredientList(params: IngredientListParams) {
   return api.get<any, PageResult<Ingredient>>('/ingredients', { params })
 }
 
-export function createIngredient(data: Omit<Ingredient, 'id' | 'createdAt'>) {
+export function createIngredient(data: Partial<Ingredient>) {
   return api.post<any, Ingredient>('/ingredients', data)
 }
 

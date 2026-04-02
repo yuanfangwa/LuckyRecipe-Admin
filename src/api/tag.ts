@@ -4,8 +4,11 @@ import type { PageResult } from './recipe'
 export interface Tag {
   id: number
   name: string
-  category: string
-  createdAt: string
+  category?: string
+  description?: string
+  color?: string
+  createTime: string
+  deleted?: number
 }
 
 export interface TagListParams {
@@ -19,7 +22,7 @@ export function getTagList(params: TagListParams) {
   return api.get<any, PageResult<Tag>>('/tags', { params })
 }
 
-export function createTag(data: Omit<Tag, 'id' | 'createdAt'>) {
+export function createTag(data: Partial<Tag>) {
   return api.post<any, Tag>('/tags', data)
 }
 

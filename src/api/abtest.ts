@@ -17,17 +17,17 @@ export interface ABExperiment {
 }
 
 export function getExperiments() {
-  return api.get<any, ABExperiment[]>('/admin/ab/experiments')
+  return api.get<any, ABExperiment[]>('/ab/experiments')
 }
 
 export function createExperiment(data: Omit<ABExperiment, 'id' | 'createdAt'>) {
-  return api.post<any, ABExperiment>('/admin/ab/experiments', data)
+  return api.post<any, ABExperiment>('/ab/experiments', data)
 }
 
 export function updateExperiment(id: number, data: Partial<ABExperiment>) {
-  return api.put<any, ABExperiment>(`/admin/ab/experiments/${id}`, data)
+  return api.put<any, ABExperiment>(`/ab/experiments/${id}`, data)
 }
 
 export function deleteExperiment(id: number) {
-  return api.delete(`/admin/ab/experiments/${id}`)
+  return api.delete(`/ab/experiments/${id}`)
 }
