@@ -1,16 +1,36 @@
 import api from './request'
 
 export interface ConfigItem {
-  key: string
-  value: string
-  label: string
-  type: 'text' | 'number' | 'boolean' | 'textarea'
+  id: number
+  configKey: string
+  configValue: string
+  description: string
+  category: string
+  dataType: 'STRING' | 'INTEGER' | 'BOOLEAN' | 'TEXT'
+  defaultValue: string | null
+  isSensitive: boolean
+  isEnabled: boolean
+  requireRestart: boolean
+  validationRule: string | null
+  minValue: number | null
+  maxValue: number | null
+  allowedValues: string | null
+  environment: string
+  configLevel: string
 }
 
-export function getConfig() {
-  return api.get<any, ConfigItem[]>('/admin/system/config')
+export interface PageResult<T> {
+  records: T[]
+  total: number
+  current: number
+  size: number
+  pages: number
 }
 
-export function saveConfig(data: Record<string, string>) {
-  return api.post('/admin/system/config', data)
+export function getConfigList(params?: { current?: number; size?: number; category?: string }) {
+  return api.get<any, PageResult<ConfigItem>>('/admin/system/config', { params })
+}
+
+export function updateConfig(id: number, data: Partial<ConfigItem>) {
+  return api.put(`/admin/system/config/${id}`, data)
 }
