@@ -14,7 +14,18 @@ api.interceptors.request.use(config => {
 })
 
 api.interceptors.response.use(
-  res => res.data,
+  res => {
+    const body = res.data
+    // 如果是标准 Result 包装 { code, data, success, message }，直接返回 data
+    if (body && typeof body === 'object' && 'code' in body && 'data' in body) {
+      if (body.code === 200 || body.success) {
+        return body.data
+      }
+      message.error(body.message || '请求失败')
+      return Promise.reject(new Error(body.message))
+    }
+    return body
+  },
   err => {
     if (err.response?.status === 401) {
       localStorage.removeItem('admin_token')

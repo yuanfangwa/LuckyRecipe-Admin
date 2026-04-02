@@ -9,7 +9,7 @@ const ok = (data: unknown, message = 'success') =>
   HttpResponse.json({ code: 200, message, data, success: true })
 
 const page = (records: unknown[], total?: number, size = 10, current = 1) =>
-  ok({ records, total: total ?? records.length, size, current, pages: Math.ceil((total ?? records.length) / size) })
+  ok({ records: records, list: records, total: total ?? records.length, size, current, pages: Math.ceil((total ?? records.length) / size) })
 
 const parseUrl = (url: URL) => {
   const params: Record<string, string> = {}
@@ -42,7 +42,7 @@ export const handlers = [
       totalRecipes: 156,
       totalUsers: 2340,
       totalComments: 8920,
-      todayViews: 1250,
+      todayVisits: 1250,
       todayLikes: 234,
       todayComments: 89,
       todayNewUsers: 15,
@@ -112,7 +112,7 @@ export const handlers = [
   }),
 
   // ─── Tags ────────────────────────────────────────────
-  http.get('/tags', async ({ request }) => {
+  http.get('/api/tags', async ({ request }) => {
     await delay(150)
     const url = new URL(request.url)
     const { keyword, current = '1', size = '10' } = parseUrl(url)
@@ -124,23 +124,23 @@ export const handlers = [
     return page(filtered.slice(start, start + s), filtered.length, s, c)
   }),
 
-  http.post('/tags', async () => {
+  http.post('/api/tags', async () => {
     await delay(400)
     return ok({ id: Date.now() }, '创建成功')
   }),
 
-  http.put('/tags/:id', async () => {
+  http.put('/api/tags/:id', async () => {
     await delay(300)
     return ok(null, '更新成功')
   }),
 
-  http.delete('/tags/:id', async () => {
+  http.delete('/api/tags/:id', async () => {
     await delay(300)
     return ok(null, '删除成功')
   }),
 
   // ─── Ingredients ─────────────────────────────────────
-  http.get('/ingredients', async ({ request }) => {
+  http.get('/api/ingredients', async ({ request }) => {
     await delay(150)
     const url = new URL(request.url)
     const { keyword, current = '1', size = '10' } = parseUrl(url)
@@ -152,49 +152,49 @@ export const handlers = [
     return page(filtered.slice(start, start + s), filtered.length, s, c)
   }),
 
-  http.post('/ingredients', async () => {
+  http.post('/api/ingredients', async () => {
     await delay(400)
     return ok({ id: Date.now() }, '创建成功')
   }),
 
-  http.put('/ingredients/:id', async () => {
+  http.put('/api/ingredients/:id', async () => {
     await delay(300)
     return ok(null, '更新成功')
   }),
 
-  http.delete('/ingredients/:id', async () => {
+  http.delete('/api/ingredients/:id', async () => {
     await delay(300)
     return ok(null, '删除成功')
   }),
 
   // ─── System Config ───────────────────────────────────
-  http.get('/admin/system/config', async () => {
+  http.get('/api/admin/system/config', async () => {
     await delay(200)
     return ok(mockSystemConfig)
   }),
 
-  http.post('/admin/system/config', async () => {
+  http.post('/api/admin/system/config', async () => {
     await delay(400)
     return ok(null, '保存成功')
   }),
 
   // ─── A/B Experiments ─────────────────────────────────
-  http.get('/admin/ab/experiments', async () => {
+  http.get('/api/admin/ab/experiments', async () => {
     await delay(200)
     return ok(mockExperiments)
   }),
 
-  http.post('/admin/ab/experiments', async () => {
+  http.post('/api/admin/ab/experiments', async () => {
     await delay(400)
     return ok({ id: Date.now() }, '创建成功')
   }),
 
-  http.put('/admin/ab/experiments/:id', async () => {
+  http.put('/api/admin/ab/experiments/:id', async () => {
     await delay(300)
     return ok(null, '更新成功')
   }),
 
-  http.delete('/admin/ab/experiments/:id', async () => {
+  http.delete('/api/admin/ab/experiments/:id', async () => {
     await delay(300)
     return ok(null, '删除成功')
   }),
