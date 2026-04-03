@@ -12,6 +12,16 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   LogoutOutlined,
+  CommentOutlined,
+  ClockCircleOutlined,
+  TrophyOutlined,
+  BellOutlined,
+  FolderOpenOutlined,
+  HeartOutlined,
+  ShareAltOutlined,
+  FileOutlined,
+  TimerOutlined,
+  BarChartOutlined,
 } from '@ant-design/icons'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 
@@ -19,24 +29,57 @@ const { Header, Sider, Content } = Layout
 
 const menuItems = [
   { key: '/admin/dashboard', icon: <DashboardOutlined />, label: '数据分析' },
-  { key: '/admin/recipes', icon: <ProfileOutlined />, label: '菜谱管理' },
-  { key: '/admin/users', icon: <UserOutlined />, label: '用户管理' },
-  { key: '/admin/tags', icon: <TagsOutlined />, label: '标签管理' },
-  { key: '/admin/ingredients', icon: <ShoppingOutlined />, label: '食材管理' },
-  { key: '/admin/abtest', icon: <ExperimentOutlined />, label: 'A/B 实验' },
-  { key: '/admin/recommendation', icon: <AimOutlined />, label: '推荐管理' },
-  { key: '/admin/config', icon: <SettingOutlined />, label: '系统配置' },
+  {
+    key: 'content', icon: <ProfileOutlined />, label: '内容管理',
+    children: [
+      { key: '/admin/recipes', icon: <ProfileOutlined />, label: '菜谱管理' },
+      { key: '/admin/comments', icon: <CommentOutlined />, label: '评论管理' },
+      { key: '/admin/checkin', icon: <ClockCircleOutlined />, label: '打卡动态' },
+    ],
+  },
+  {
+    key: 'user-ops', icon: <UserOutlined />, label: '用户运营',
+    children: [
+      { key: '/admin/users', icon: <UserOutlined />, label: '用户管理' },
+      { key: '/admin/user-profile', icon: <BarChartOutlined />, label: '用户画像' },
+      { key: '/admin/favorites', icon: <HeartOutlined />, label: '收藏管理' },
+      { key: '/admin/achievements', icon: <TrophyOutlined />, label: '成就管理' },
+    ],
+  },
+  {
+    key: 'system', icon: <SettingOutlined />, label: '系统工具',
+    children: [
+      { key: '/admin/ingredients', icon: <ShoppingOutlined />, label: '食材管理' },
+      { key: '/admin/tags', icon: <TagsOutlined />, label: '标签管理' },
+      { key: '/admin/notifications', icon: <BellOutlined />, label: '通知管理' },
+      { key: '/admin/files', icon: <FileOutlined />, label: '文件管理' },
+      { key: '/admin/shares', icon: <ShareAltOutlined />, label: '分享管理' },
+      { key: '/admin/abtest', icon: <ExperimentOutlined />, label: 'A/B 实验' },
+      { key: '/admin/recommendation', icon: <AimOutlined />, label: '推荐管理' },
+      { key: '/admin/timers', icon: <TimerOutlined />, label: '烹饪计时' },
+      { key: '/admin/config', icon: <SettingOutlined />, label: '系统配置' },
+    ],
+  },
 ]
 
 const breadcrumbMap: Record<string, string[]> = {
   '/admin/dashboard': ['首页', '数据分析'],
-  '/admin/recipes': ['首页', '菜谱管理'],
-  '/admin/users': ['首页', '用户管理'],
-  '/admin/tags': ['首页', '标签管理'],
-  '/admin/ingredients': ['首页', '食材管理'],
-  '/admin/abtest': ['首页', 'A/B 实验'],
-  '/admin/recommendation': ['首页', '推荐管理'],
-  '/admin/config': ['首页', '系统配置'],
+  '/admin/recipes': ['首页', '内容管理', '菜谱管理'],
+  '/admin/comments': ['首页', '内容管理', '评论管理'],
+  '/admin/checkin': ['首页', '内容管理', '打卡动态'],
+  '/admin/users': ['首页', '用户运营', '用户管理'],
+  '/admin/user-profile': ['首页', '用户运营', '用户画像'],
+  '/admin/favorites': ['首页', '用户运营', '收藏管理'],
+  '/admin/achievements': ['首页', '用户运营', '成就管理'],
+  '/admin/tags': ['首页', '系统工具', '标签管理'],
+  '/admin/ingredients': ['首页', '系统工具', '食材管理'],
+  '/admin/notifications': ['首页', '系统工具', '通知管理'],
+  '/admin/files': ['首页', '系统工具', '文件管理'],
+  '/admin/shares': ['首页', '系统工具', '分享管理'],
+  '/admin/abtest': ['首页', '系统工具', 'A/B 实验'],
+  '/admin/recommendation': ['首页', '系统工具', '推荐管理'],
+  '/admin/timers': ['首页', '系统工具', '烹饪计时'],
+  '/admin/config': ['首页', '系统工具', '系统配置'],
 }
 
 export default function AdminLayout() {
@@ -45,9 +88,21 @@ export default function AdminLayout() {
   const location = useLocation()
   const { token: { colorBgContainer } } = theme.useToken()
 
-  const selectedKey = menuItems.find(item =>
-    location.pathname.startsWith(item.key)
-  )?.key || '/admin/dashboard'
+  const allMenuKeys = menuItems.flatMap(item =>
+    item.children ? item.children.map(c => c.key) : [item.key]
+  )
+  const selectedKey = allMenuKeys.find(key =>
+    location.pathname.startsWith(key)
+  ) || '/admin/dashboard'
+
+  const path = location.pathname
+  const defaultOpenKeys = path.startsWith('/admin/recipes') || path.startsWith('/admin/comments') || path.startsWith('/admin/checkin')
+    ? ['content']
+    : path.startsWith('/admin/users') || path.startsWith('/admin/user-profile') || path.startsWith('/admin/favorites') || path.startsWith('/admin/achievements')
+    ? ['user-ops']
+    : !path.startsWith('/admin/dashboard')
+    ? ['system']
+    : []
 
   const user = JSON.parse(localStorage.getItem('admin_user') || '{}')
 
@@ -96,6 +151,7 @@ export default function AdminLayout() {
           theme="dark"
           mode="inline"
           selectedKeys={[selectedKey]}
+          defaultOpenKeys={defaultOpenKeys}
           items={menuItems}
           onClick={({ key }) => navigate(key)}
         />
