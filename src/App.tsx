@@ -10,6 +10,15 @@ import IngredientManage from './pages/IngredientManage'
 import ConfigManage from './pages/ConfigManage'
 import ABTestManage from './pages/ABTestManage'
 import RecommendManage from './pages/RecommendManage'
+import CommentManage from './pages/CommentManage'
+import CheckInManage from './pages/CheckInManage'
+import AchievementManage from './pages/AchievementManage'
+import NotificationManage from './pages/NotificationManage'
+import FileManage from './pages/FileManage'
+import ShareManage from './pages/ShareManage'
+import FavoriteManage from './pages/FavoriteManage'
+import UserProfile from './pages/UserProfile'
+import TimerManage from './pages/TimerManage'
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const token = localStorage.getItem('admin_token')
@@ -34,6 +43,15 @@ export default function App() {
           <Route path="abtest" element={<ABTestManage />} />
           <Route path="recommendation" element={<RecommendManage />} />
           <Route path="config" element={<ConfigManage />} />
+          <Route path="comments" element={<CommentManage />} />
+          <Route path="checkin" element={<CheckInManage />} />
+          <Route path="achievements" element={<AchievementManage />} />
+          <Route path="notifications" element={<NotificationManage />} />
+          <Route path="files" element={<FileManage />} />
+          <Route path="shares" element={<ShareManage />} />
+          <Route path="favorites" element={<FavoriteManage />} />
+          <Route path="user-profile" element={<UserProfile />} />
+          <Route path="timers" element={<TimerManage />} />
         </Route>
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
