@@ -20,7 +20,7 @@ import {
   HeartOutlined,
   ShareAltOutlined,
   FileOutlined,
-  TimerOutlined,
+  ClockCircleOutlined,
   BarChartOutlined,
 } from '@ant-design/icons'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
@@ -56,7 +56,7 @@ const menuItems = [
       { key: '/admin/shares', icon: <ShareAltOutlined />, label: '分享管理' },
       { key: '/admin/abtest', icon: <ExperimentOutlined />, label: 'A/B 实验' },
       { key: '/admin/recommendation', icon: <AimOutlined />, label: '推荐管理' },
-      { key: '/admin/timers', icon: <TimerOutlined />, label: '烹饪计时' },
+      { key: '/admin/timers', icon: <ClockCircleOutlined />, label: '烹饪计时' },
       { key: '/admin/config', icon: <SettingOutlined />, label: '系统配置' },
     ],
   },
