@@ -18,8 +18,8 @@ export interface CheckInStats {
   activeUsers: number
 }
 
-export function getCheckInFeed(params: { pageNum: number; pageSize: number; recipeId?: number }) {
-  return api.get<any, { total: number; pages: number; records: CheckIn[] }>('/checkin/feed', { params })
+export function getCheckInFeed(params: { pageNum: number; pageSize: number; recipeId?: number; userId?: number }) {
+  return api.get<any, { total: number; pages: number; records: CheckIn[] }>('/admin/checkins', { params })
 }
 
 export function getCheckInByRecipe(recipeId: number, params: { pageNum: number; pageSize: number }) {
@@ -28,4 +28,8 @@ export function getCheckInByRecipe(recipeId: number, params: { pageNum: number; 
 
 export function getCheckInStats() {
   return api.get<any, CheckInStats>('/checkin/stats')
+}
+
+export function deleteCheckIn(id: number) {
+  return api.delete(`/admin/checkins/${id}`)
 }

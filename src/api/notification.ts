@@ -26,3 +26,8 @@ export function deleteNotification(id: number) {
 export function batchMarkRead(ids: number[]) {
   return Promise.all(ids.map(id => markNotificationRead(id)))
 }
+
+// Admin broadcast
+export function broadcastNotification(data: { title: string; content: string; userIds?: number[] }) {
+  return api.post('/admin/notifications/broadcast', data)
+}

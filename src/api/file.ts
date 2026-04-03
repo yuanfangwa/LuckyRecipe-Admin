@@ -19,3 +19,12 @@ export function uploadAvatar(file: File) {
 export function deleteFile(url: string) {
   return api.delete('/upload', { params: { url } })
 }
+
+// Admin file management
+export function getFileList(params?: { path?: string }) {
+  return api.get<any, any[]>('/admin/files', { params })
+}
+
+export function batchDeleteFiles(urls: string[]) {
+  return api.delete('/admin/files', { data: { urls } })
+}

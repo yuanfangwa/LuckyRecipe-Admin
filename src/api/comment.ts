@@ -19,8 +19,8 @@ export interface RatingSummary {
   total: number
 }
 
-export function getCommentList(params: { pageNum: number; pageSize: number; keyword?: string; recipeId?: number }) {
-  return api.get<any, { total: number; pages: number; records: Comment[] }>('/comments', { params })
+export function getCommentList(params: { pageNum: number; pageSize: number; keyword?: string; recipeId?: number; userId?: number }) {
+  return api.get<any, { total: number; pages: number; records: Comment[] }>('/admin/comments', { params })
 }
 
 export function getCommentTree(params?: { recipeId?: number }) {
@@ -28,7 +28,11 @@ export function getCommentTree(params?: { recipeId?: number }) {
 }
 
 export function deleteComment(id: number) {
-  return api.delete(`/comments/${id}`)
+  return api.delete(`/admin/comments/${id}`)
+}
+
+export function getCommentDetail(id: number) {
+  return api.get<any, Comment>(`/admin/comments/${id}`)
 }
 
 export function getRatingSummary(params?: { recipeId?: number }) {
